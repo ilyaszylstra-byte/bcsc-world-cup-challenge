@@ -366,14 +366,22 @@ function parseKickoffLocal(match){
   }
   let y,mo,d;
   if(/^\d{4}-\d{2}-\d{2}/.test(dateText)){[y,mo,d]=dateText.slice(0,10).split('-').map(Number)}
-  else{let parsed=new Date(dateText); if(!isNaN(parsed)){y=parsed.getFullYear();mo=parsed.getMonth()+1;d=parsed.getDate()}}
+  else{let parsed=new Date(dateText); if(!isNaN(parsed)){y=parsed.getUTCFullYear();mo=parsed.getUTCMonth()+1;d=parsed.getUTCDate()}}
   if(!y)return null;
-  let timeText=String(match.kickoffRaw||'').trim() || String(match.time||'').trim();
-  let tm=timeText.match(/(\d{1,2}):(\d{2})\s*([AP]M)/i);
+
+  // Be extra tolerant with Google Sheets time cells. Sometimes Kickoff arrives as
+  // "1:00 PM", sometimes as an 1899-12-30 ISO time, and sometimes only the
+  // friendly display string has the proper AM/PM value.
+  let timeOptions=[String(match.kickoffRaw||'').trim(), friendlyTime(match.kickoffRaw), String(match.time||'').trim()].filter(Boolean);
+  let tm=null;
+  for(let t of timeOptions){tm=String(t).match(/(\d{1,2}):(\d{2})\s*([AP]M)/i); if(tm)break;}
   if(!tm)return null;
   let h=Number(tm[1]),min=Number(tm[2]),ap=tm[3].toUpperCase();
   if(ap==='PM'&&h<12)h+=12;if(ap==='AM'&&h===12)h=0;
-  return new Date(y,mo-1,d,h,min,0,0);
+
+  // Tournament kickoff times are Eastern Time. In June/July Toronto is EDT (UTC-4),
+  // so this locks at the same real moment no matter what timezone the device uses.
+  return new Date(Date.UTC(y,mo-1,d,h+4,min,0,0));
 }
 function isMatchLocked(m){let k=parseKickoffLocal(m);return !!(m&&m.locked)||!!(k&&Date.now()>=k.getTime())}
 function lockText(m){let k=parseKickoffLocal(m);return k&&Date.now()>=k.getTime()?'🔒 Picks locked at kickoff':'🔒 Match locked'}
