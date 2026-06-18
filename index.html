@@ -87,7 +87,7 @@ h1{font-size:clamp(36px,7vw,76px);text-transform:uppercase;line-height:.95;margi
       <div class="home-panels">
         <div class="card mini-board" id="topPlayersPreview"><h3>🥇 Top Players Preview</h3><p><b>🏆 Tournament Begins June 17</b><br>No leaderboard yet. Make your picks to compete for the top spot!</p></div>
         <div class="card mini-board" id="homeNationsPreview"><h3>🌎 Nations Preview</h3><ol><li>Argentina <b>0.0 avg</b></li><li>England <b>0.0 avg</b></li><li>France <b>0.0 avg</b></li><li>Spain <b>0.0 avg</b></li><li>Portugal <b>0.0 avg</b></li><li>Brazil <b>0.0 avg</b></li><li>Netherlands <b>0.0 avg</b></li><li>Germany <b>0.0 avg</b></li></ol></div>
-        <div class="card mini-board"><h3>🏅 Badge Spotlight</h3><p><b>Perfect Matchday</b><br>Correctly predict every eligible match in one day.</p></div>
+        <div class="card mini-board" id="badgeSpotlightPreview"><h3>🏅 Badge Spotlight</h3><p>No badges earned yet. Badge leaders will appear here after awards are earned.</p></div>
       </div>
     </section>
 
@@ -411,6 +411,10 @@ function renderHomeNationsPreview(){
 }
 function badgeIcon(name){let s=String(name||'').toLowerCase();if(s.includes('perfect'))return '🎯';if(s.includes('giant'))return '🧨';if(s.includes('nation'))return '🌎';if(s.includes('expert'))return '🧠';if(s.includes('comeback'))return '🚀';if(s.includes('canada'))return '🍁';if(s.includes('streak'))return '🔥';return '🏅'}
 function badgeChips(p,limit=3){let b=playerBadges(p)||[];if(!b.length)return '<span class="muted">No badges yet</span>';let shown=b.slice(0,limit).map(x=>`<span class="badgeChip" title="${x}">${badgeIcon(x)} ${x}</span>`).join(' ');return shown+(b.length>limit?` <span class="badgeChip">+${b.length-limit}</span>`:'')}
+function shuffleArray(arr){let a=arr.slice();for(let i=a.length-1;i>0;i--){let j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a}
+function topPlayersPreviewList(ranked,limit=8){let groups={};ranked.filter(p=>Number(p.points)>0).forEach(p=>{let key=(Number(p.points)||0)+'_'+(Number(p.accuracy)||0);(groups[key]=groups[key]||[]).push(p);});return Object.keys(groups).sort((ka,kb)=>{let [pa,aa]=ka.split('_').map(Number),[pb,ab]=kb.split('_').map(Number);return (pb-pa)||(ab-aa)}).flatMap(k=>shuffleArray(groups[k])).slice(0,limit)}
+function badgeLeaders(limit=8){let groups={};state.players.forEach(p=>{let badges=playerBadges(p)||[];if(!badges.length)return;let count=badges.length;(groups[count]=groups[count]||[]).push({...p,badgeList:badges,badgeCount:count});});return Object.keys(groups).map(Number).sort((a,b)=>b-a).flatMap(c=>shuffleArray(groups[c])).slice(0,limit)}
+function renderBadgeSpotlight(){let el=document.getElementById('badgeSpotlightPreview');if(!el)return;let leaders=badgeLeaders(8);if(!leaders.length){el.innerHTML=`<h3>🏅 Badge Spotlight</h3><p>No badges earned yet. Badge leaders will appear here after awards are earned.</p>`;return;}el.innerHTML=`<h3>🏅 Badge Spotlight</h3><ol>${leaders.map(p=>`<li>${posIcon(p)} ${flagIcon(p.nation)} ${p.name} #${p.jersey}<br><span class="small">${p.badgeList.slice(0,2).map(b=>`${badgeIcon(b)} ${b}`).join(' • ')}${p.badgeList.length>2?` • +${p.badgeList.length-2} more`:''}</span></li>`).join('')}</ol>`;}
 function renderLeaderboard(){
  let ranked=rankPlayers();
  let hasScores=ranked.some(p=>Number(p.points)>0);
@@ -420,8 +424,9 @@ function renderLeaderboard(){
    if(topPreview)topPreview.innerHTML=`<h3>🥇 Top Players Preview</h3><p><b>🏆 Tournament Begins June 17</b><br>No leaderboard yet. Make your picks to compete for the top spot!</p>`;
    if(podium)podium.innerHTML=`<div class="podium-card silver">🥈<b>TBD</b><span>Waiting for scores</span></div><div class="podium-card gold">🥇<b>TBD</b><span>First scored match</span></div><div class="podium-card bronze">🥉<b>TBD</b><span>Coming soon</span></div>`;
  }else{
+   let previewPlayers=topPlayersPreviewList(ranked,8);
    let top3=ranked.slice(0,3);
-   if(topPreview)topPreview.innerHTML=`<h3>🥇 Top Players Preview</h3><ol>${top3.map(p=>`<li>${p.name} #${p.jersey} <b>${p.points} pts</b></li>`).join('')}</ol>`;
+   if(topPreview)topPreview.innerHTML=`<h3>🥇 Top Players Preview</h3><ol>${previewPlayers.map(p=>`<li>${p.name} #${p.jersey} <b>${p.points} pts</b></li>`).join('')}</ol>`;
    if(podium){
      let first=top3[0], second=top3[1], third=top3[2];
      podium.innerHTML=`<div class="podium-card silver">🥈<b>${second?second.name+' #'+second.jersey:'TBD'}</b><span>${second?second.points+' pts':'Coming soon'}</span></div><div class="podium-card gold">🥇<b>${first?first.name+' #'+first.jersey:'TBD'}</b><span>${first?first.points+' pts':'Coming soon'}</span></div><div class="podium-card bronze">🥉<b>${third?third.name+' #'+third.jersey:'TBD'}</b><span>${third?third.points+' pts':'Coming soon'}</span></div>`;
@@ -504,7 +509,7 @@ function renderHistory(){
   if(finals)finals.innerHTML=`<table class="table historyTable"><thead><tr><th>Year</th><th>Champion</th><th>Score</th><th>Runner-Up</th></tr></thead><tbody>${worldCupFinals.map(f=>`<tr><td><span class="yearBadge">${f[0]}</span></td><td>${flagIcon(f[1])} ${f[2]}</td><td>${f[3]}</td><td>${flagIcon(f[4])} ${f[5]}</td></tr>`).join('')}</tbody></table>`;
 }
 
-function resetDemo(){localStorage.removeItem('bcscState');localStorage.removeItem('bcscStateV14');localStorage.removeItem('bcscStateV17');localStorage.removeItem('bcscIsaiahResetV11');localStorage.removeItem('bcscIsaiahResetV13');localStorage.removeItem('bcscIsaiahResetV17');location.reload()}function renderAll(){let lb=document.getElementById('logoutNavBtn');if(lb)lb.style.display=state.current?'inline-block':'none';renderNations();renderMatches();renderSchedule();renderLeaderboard();renderNationStandings();renderHomeNationsPreview();renderWall();renderProfile();renderWelcome();renderAdmin();renderDidYouKnow();renderHistory()}renderAll();loadSheetData();
+function resetDemo(){localStorage.removeItem('bcscState');localStorage.removeItem('bcscStateV14');localStorage.removeItem('bcscStateV17');localStorage.removeItem('bcscIsaiahResetV11');localStorage.removeItem('bcscIsaiahResetV13');localStorage.removeItem('bcscIsaiahResetV17');location.reload()}function renderAll(){let lb=document.getElementById('logoutNavBtn');if(lb)lb.style.display=state.current?'inline-block':'none';renderNations();renderMatches();renderSchedule();renderLeaderboard();renderNationStandings();renderHomeNationsPreview();renderBadgeSpotlight();renderWall();renderProfile();renderWelcome();renderAdmin();renderDidYouKnow();renderHistory()}renderAll();loadSheetData();
 
 </script>
 </body>
