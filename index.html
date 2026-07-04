@@ -90,6 +90,17 @@ main{max-width:1540px;padding-top:0}.home-dashboard-hero{margin-top:0;min-height
 .table .badgeChip.iconOnly{margin:1px 2px;}
 .statsTabs button{position:relative;z-index:2;}
 </style>
+
+<style>
+/* V55 Round of 16 / Road to the Final */
+.roadFinalGrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:16px;margin-top:18px}
+.bracketRound{background:rgba(255,255,255,.035);border:1px solid rgba(16,184,90,.25);border-radius:14px;padding:14px}
+.bracketRound h4{margin:0 0 10px;color:var(--gold);text-transform:uppercase;letter-spacing:.05em}
+.bracketMatch{display:grid;grid-template-columns:1fr auto 1fr;gap:8px;align-items:center;padding:8px 10px;border-bottom:1px solid rgba(255,255,255,.08);border-radius:8px}
+.bracketMatch:last-child{border-bottom:0}.bracketTeam{font-weight:900}.bracketWinner{color:var(--gold);text-shadow:0 0 12px rgba(242,201,76,.24)}
+.oddsRow{display:grid;grid-template-columns:42px 1fr auto;gap:10px;align-items:center;padding:9px 10px;margin:4px 0;border-radius:9px;background:linear-gradient(90deg,rgba(16,184,90,.10),transparent);border:1px solid rgba(255,255,255,.06)}
+.oddsBar{height:8px;border-radius:999px;background:rgba(255,255,255,.08);overflow:hidden;margin-top:4px}.oddsBar span{display:block;height:100%;background:linear-gradient(90deg,var(--green),var(--gold));}
+</style>
 </head>
 <body>
   <div class="stadium-bg"></div>
@@ -129,9 +140,13 @@ main{max-width:1540px;padding-top:0}.home-dashboard-hero{margin-top:0;min-height
 
       <div class="home-grid-v47">
         <div class="card mini-board stats-leaders-card"><h3>📊 Stats Leaders</h3><div id="homeStatsLeaders"></div></div>
-        <div class="card mini-board round-card"><h3>⚔️ The Round of 32</h3><div id="homeRound32Preview"></div><button onclick="show('picks')">View All Round of 32 Matches</button></div>
+        <div class="card mini-board round-card"><h3>⚔️ The Round of 16</h3><div id="homeRound32Preview"></div><button onclick="show('picks')">View All Round of 16 Matches</button></div>
         <div class="card mini-board" id="homeNationsPreview"><h3>🌎 Nations Preview</h3><p>Loading Nations Cup...</p></div>
         <div class="card mini-board" id="badgeSpotlightPreview"><h3>🏅 Badge Spotlight</h3><p>Loading badges...</p></div>
+      </div>
+      <div class="grid3">
+        <div class="card" style="grid-column:span 2"><h3>🏆 Road to the Final</h3><p class="small">Winners advance automatically after you score each match in Google Sheets.</p><div id="roadToFinal"></div></div>
+        <div class="card"><h3>📈 Championship Odds</h3><p class="small">A fun estimate based on remaining teams and match strength.</p><div id="championshipOdds"></div></div>
       </div>
     </section>
 
@@ -145,9 +160,9 @@ main{max-width:1540px;padding-top:0}.home-dashboard-hero{margin-top:0;min-height
 
     <section id="welcome" class="page"><div class="page-head"><h1>🎉 Welcome!</h1><p>Your BCSC World Cup journey begins now.</p></div><div id="welcomeContent" class="panel narrow login-card"></div></section>
 
-    <section id="picks" class="page"><div class="page-head round32Head"><h1>The Round of 32</h1><p id="playerStatus">Login first to save picks.</p><p class="small">Knockout round picks are worth more. Make your choice before kickoff.</p></div><div id="matchList"></div></section>
+    <section id="picks" class="page"><div class="page-head round32Head"><h1>The Round of 16</h1><p id="playerStatus">Login first to save picks.</p><p class="small">Pick the team that advances. Extra time and penalties count. Round of 16 picks are worth 7 points.</p></div><div id="matchList"></div></section>
 
-    <section id="leaderboard" class="page"><div class="page-head"><h1>🏆 Individual Leaderboard</h1><p>Shared ranks are used when players are tied.</p></div><div class="podium" id="leaderboardPodium"><div class="podium-card silver">🥈<b>TBD</b><span>Waiting for scores</span></div><div class="podium-card gold">🥇<b>TBD</b><span>First scored match</span></div><div class="podium-card bronze">🥉<b>TBD</b><span>Coming soon</span></div></div><div id="leaderboardTable"></div></section>
+    <section id="leaderboard" class="page"><div class="page-head"><h1>🏆 Individual Leaderboard</h1><p>Tiebreaker: points, then badge count, then accuracy.</p></div><div class="podium" id="leaderboardPodium"><div class="podium-card silver">🥈<b>TBD</b><span>Waiting for scores</span></div><div class="podium-card gold">🥇<b>TBD</b><span>First scored match</span></div><div class="podium-card bronze">🥉<b>TBD</b><span>Coming soon</span></div></div><div id="leaderboardTable"></div></section>
 
     <section id="nations" class="page"><div class="page-head"><h1>🌎 Nations Cup</h1><p>Ranked by average player score, not total points. Open each nation to see the full roster.</p></div><div id="nationStandings"></div></section>
 
@@ -165,7 +180,7 @@ main{max-width:1540px;padding-top:0}.home-dashboard-hero{margin-top:0;min-height
       <div class="grid3">
         <div class="panel" style="grid-column:span 1"><h2>⚽ Goals</h2><div id="goalsLeadersTable"></div></div>
         <div class="panel" style="grid-column:span 1"><h2>🎯 Assists</h2><div id="assistsLeadersTable"></div></div>
-        <div class="panel" style="grid-column:span 1"><h2>🏆 Golden Boot Watch</h2><p>The Golden Boot race is ranked by goals, then assists, then minutes played. This section can be updated as the tournament continues.</p><button onclick="show('picks')">Go to Round of 32 Picks</button></div>
+        <div class="panel" style="grid-column:span 1"><h2>🏆 Golden Boot Watch</h2><p>The Golden Boot race is ranked by goals, then assists, then minutes played. This section can be updated as the tournament continues.</p><button onclick="show('picks')">Go to Round of 16 Picks</button></div>
       </div>
     </section>
 
@@ -191,7 +206,7 @@ main{max-width:1540px;padding-top:0}.home-dashboard-hero{margin-top:0;min-height
       </div>
     </section>
 
-    <section id="admin" class="page"><div class="page-head"><h1>⚙️ Admin Dashboard</h1><p>Coach control center for running the BCSC U10 World Cup Challenge.</p></div><div id="adminLoginPanel" class="panel narrow"><h2>Coach Access</h2><p>Enter the coach code to open admin tools.</p><label>Admin Code</label><input id="adminCode" type="password" placeholder="Enter coach code"><button onclick="adminLogin()">Open Admin</button><p id="adminMsg" class="msg"></p><small>Default preview code: <b>coach2026</b></small></div><div id="adminTools" style="display:none"><div class="panel adminBar"><h2>Welcome Coach</h2><div class="cta"><button onclick="show('home')">Home</button><button onclick="adminLogout()">Logout</button></div></div><div class="grid3"><div class="card"><h3>👥 Players</h3><p class="points" id="adminPlayerCount">32</p><p>Registered players</p></div><div class="card"><h3>🌎 Nations</h3><p class="points" id="adminNationCount">0</p><p>Nations selected</p></div><div class="card"><h3>✅ Picks</h3><p class="points" id="adminPickCount">0</p><p>Picks saved</p></div></div><div class="panel"><h2>📢 Admin Notes</h2><p>Use this page to review players, reset test accounts, enter match results, and run scoring from Google Sheets.</p><button onclick="resetDemo()">Reset Local Demo Data</button> <button onclick="resetPlayerAdmin('isaiah88')">Reset Isaiah #88</button> <button onclick="adminScoreAll()">🏆 Calculate Scores for All Saved Results</button></div><h2>⚽ Match Results Center</h2><div id="adminMatches"></div><h2>👥 Player Management</h2><div id="adminPlayers"></div></div></section>
+    <section id="admin" class="page"><div class="page-head"><h1>⚙️ Admin Dashboard</h1><p>Coach control center for running the BCSC U10 World Cup Challenge.</p></div><div id="adminLoginPanel" class="panel narrow"><h2>Coach Access</h2><p>Enter the coach code to open admin tools.</p><label>Admin Code</label><input id="adminCode" type="password" placeholder="Enter coach code"><button onclick="adminLogin()">Open Admin</button><p id="adminMsg" class="msg"></p></div><div id="adminTools" style="display:none"><div class="panel adminBar"><h2>Welcome Coach</h2><div class="cta"><button onclick="show('home')">Home</button><button onclick="adminLogout()">Logout</button></div></div><div class="grid3"><div class="card"><h3>👥 Players</h3><p class="points" id="adminPlayerCount">32</p><p>Registered players</p></div><div class="card"><h3>🌎 Nations</h3><p class="points" id="adminNationCount">0</p><p>Nations selected</p></div><div class="card"><h3>✅ Picks</h3><p class="points" id="adminPickCount">0</p><p>Picks saved</p></div></div><div class="panel"><h2>📢 Admin Notes</h2><p>Use this page to review players, reset test accounts, enter match results, and run scoring from Google Sheets.</p><button onclick="resetDemo()">Reset Local Demo Data</button> <button onclick="resetPlayerAdmin('isaiah88')">Reset Isaiah #88</button> <button onclick="adminScoreAll()">🏆 Calculate Scores for All Saved Results</button></div><h2>⚽ Match Results Center</h2><div id="adminMatches"></div><h2>👥 Player Management</h2><div id="adminPlayers"></div></div></section>
   </main>
   <footer>Brantford City Soccer Club • U10 World Cup Challenge 2026</footer>
   <script>
@@ -290,8 +305,22 @@ const round32Fallback=[
  {id:'R32-16',stage:'Round of 32',home:'Spain',away:'Austria',time:'July 3 • 4:30 PM',dateRaw:'2026-07-03',kickoffRaw:'4:30 PM',coach:'Spain',conf:4}
 ];
 function isRound32(m){return String(m.stage||'').toLowerCase().includes('round of 32')||String(m.stage||'').toLowerCase().includes('last 32')||String(m.id||'').toUpperCase().startsWith('R32')}
+function isRound16(m){let st=String(m.stage||'').toLowerCase();return st.includes('round of 16')||st.includes('last 16')||String(m.id||'').toUpperCase().startsWith('R16')}
+function isCurrentPickRound(m){return isRound16(m)}
+const round16Fallback=[
+ {id:'70',stage:'Round of 16',home:'Canada',away:'Morocco',time:'July 4 • 1:00 PM',dateRaw:'2026-07-04',kickoffRaw:'1:00 PM',coach:'Morocco',conf:3},
+ {id:'71',stage:'Round of 16',home:'Paraguay',away:'France',time:'July 4 • 5:00 PM',dateRaw:'2026-07-04',kickoffRaw:'5:00 PM',coach:'France',conf:4},
+ {id:'72',stage:'Round of 16',home:'Brazil',away:'Norway',time:'July 5 • 4:00 PM',dateRaw:'2026-07-05',kickoffRaw:'4:00 PM',coach:'Brazil',conf:4},
+ {id:'73',stage:'Round of 16',home:'Mexico',away:'England',time:'July 5 • 8:00 PM',dateRaw:'2026-07-05',kickoffRaw:'8:00 PM',coach:'England',conf:3},
+ {id:'74',stage:'Round of 16',home:'Belgium',away:'United States',time:'July 6 • 8:00 PM',dateRaw:'2026-07-06',kickoffRaw:'8:00 PM',coach:'Belgium',conf:3},
+ {id:'75',stage:'Round of 16',home:'Portugal',away:'Spain',time:'July 6 • 3:00 PM',dateRaw:'2026-07-06',kickoffRaw:'3:00 PM',coach:'Spain',conf:3},
+ {id:'76',stage:'Round of 16',home:'Argentina',away:'Australia',time:'July 7 • 12:00 PM',dateRaw:'2026-07-07',kickoffRaw:'12:00 PM',coach:'Argentina',conf:5},
+ {id:'77',stage:'Round of 16',home:'Switzerland',away:'Colombia',time:'July 7 • 4:00 PM',dateRaw:'2026-07-07',kickoffRaw:'4:00 PM',coach:'Colombia',conf:3}
+];
+function getRound16Matches(){let live=(state.matches&&state.matches.length?state.matches:[]).filter(isRound16);return live.length?live:round16Fallback}
 function getRound32Matches(){let live=(state.matches&&state.matches.length?state.matches:[]).filter(isRound32);return live.length?live:round32Fallback}
-function getPreliminaryMatches(){return getMatches().filter(m=>!isRound32(m)&&String(m.stage||'').toLowerCase().includes('group'))}
+function getCurrentMatches(){return getRound16Matches()}
+function getPreliminaryMatches(){return getMatches().filter(m=>!isRound16(m) && (String(m.stage||'').toLowerCase().includes('group')||isRound32(m)))}
 function renderLeaderList(containerId,arr,label){let el=document.getElementById(containerId);if(!el)return;el.innerHTML=`<table class="table"><tr><th>#</th><th>Player</th><th>Team</th><th>${label}</th></tr>${arr.slice(0,10).map((x,i)=>`<tr><td>${i+1}</td><td>${x[0]}</td><td>${flagIcon(teamCode(x[1]))} ${x[1]}</td><td><b>${x[2]}</b></td></tr>`).join('')}</table>`}
 function renderStatsLeaders(){renderLeaderList('goalsLeadersTable',fifaGoalLeaders,'Goals');renderLeaderList('assistsLeadersTable',fifaAssistLeaders,'Assists');renderHomeStatsLeaders(window.homeStatsMode||'goals')}
 function renderHomeStatsLeaders(mode='goals'){window.homeStatsMode=mode;let h=document.getElementById('homeStatsLeaders');if(!h)return;let arr=mode==='assists'?fifaAssistLeaders:fifaGoalLeaders;let label=mode==='assists'?'Assists':'Goals';h.innerHTML=`<div class="statsTabs"><button class="${mode==='goals'?'active':''}" type="button" onclick="switchHomeStatsLeaders('goals')">⚽ Goals</button><button class="${mode==='assists'?'active':''}" type="button" onclick="switchHomeStatsLeaders('assists')">🎯 Assists</button></div>${arr.slice(0,10).map((x,i)=>`<div class="statLeaderRow"><span>${i+1}</span><span>${flagIcon(teamCode(x[1]))} ${x[0]}<br><small>${x[1]}</small></span><b>${x[2]}</b></div>`).join('')}<button onclick="show('stats')">View Full FIFA Stats</button>`}
@@ -301,7 +330,7 @@ function switchHomeStatsLeaders(mode){
   renderHomeStatsLeaders(window.homeStatsMode);
 }
 
-function renderHomeRound32Preview(){let el=document.getElementById('homeRound32Preview');if(!el)return;let ms=getRound32Matches().slice(0,8);el.innerHTML=ms.map(m=>`<div class="round-mini-row"><span>${flagIcon(teamCode(m.home))} ${m.home}</span><b>vs</b><span>${flagIcon(teamCode(m.away))} ${m.away}</span></div>`).join('')}
+function renderHomeRound32Preview(){let el=document.getElementById('homeRound32Preview');if(!el)return;let ms=getCurrentMatches().slice(0,8);el.innerHTML=ms.map(m=>`<div class="round-mini-row"><span>${flagIcon(teamCode(m.home))} ${m.home}</span><b>vs</b><span>${flagIcon(teamCode(m.away))} ${m.away}</span></div>`).join('')}
 function pickHistoryHtml(p){let ms=getPreliminaryMatches().filter(m=>state.picks[p.id+'_'+m.id]||m.winner||m.result).sort((a,b)=>Number(a.id)-Number(b.id));if(!ms.length)return '<div class="panel"><h3>📜 Preliminary Round Pick History</h3><p>No preliminary pick history yet.</p></div>';return `<div class="panel"><h3>📜 Preliminary Round Pick History</h3><p class="small">Your saved picks from the group stage/preliminary round.</p>${ms.map(m=>{let sel=state.picks[p.id+'_'+m.id]||'No pick';let correct=m.winner&&sel===m.winner;let wrong=m.winner&&sel!==m.winner&&sel!=='No pick';return `<div class="card match historyPick"><h3>${flagIcon(teamCode(m.home))} ${m.home} vs ${flagIcon(teamCode(m.away))} ${m.away}</h3><p>${m.time} • ${m.stage}</p><p><b>Your pick:</b> ${sel==='No pick'?'—':flagIcon(teamCode(sel))+' '+sel} ${correct?'✅':wrong?'❌':''}</p>${m.result?`<p><b>Result:</b> ${m.result} • Winner: ${m.winner}</p>`:''}</div>`}).join('')}</div>`}
 
 function renderDidYouKnow(){let index=Math.floor(Date.now()/(12*60*60*1000))%didYouKnowFacts.length;let fact=didYouKnowFacts[index];['didYouKnowFact','homeDidYouKnowFact'].forEach(id=>{let el=document.getElementById(id);if(el)el.textContent=fact;});}
@@ -332,7 +361,7 @@ async function pick(mid,val){
    alert((res&&res.message)||'Pick could not be saved. Please try again.');
  }
 }
-function rankPlayers(){let arr=[...state.players].sort((a,b)=>(b.points-a.points)||((b.accuracy||0)-(a.accuracy||0))||a.name.localeCompare(b.name));let lastPts=null,lastAcc=null,rank=0;arr.forEach((p,i)=>{let acc=p.accuracy||0;if(p.points!==lastPts||acc!==lastAcc){rank=i+1;lastPts=p.points;lastAcc=acc}p.rank=rank});return arr}
+function rankPlayers(){let arr=[...state.players].sort((a,b)=>(b.points-a.points)||((playerBadges(b).length||0)-(playerBadges(a).length||0))||((b.accuracy||0)-(a.accuracy||0))||a.name.localeCompare(b.name));let lastPts=null,lastBadges=null,rank=0;arr.forEach((p,i)=>{let badges=playerBadges(p).length||0;if(p.points!==lastPts||badges!==lastBadges){rank=i+1;lastPts=p.points;lastBadges=badges}p.rank=rank});return arr}
 function renderNations(){let el=document.getElementById('nationGrid'); if(!el)return; el.innerHTML=nations.map(n=>{let c=state.players.filter(p=>p.nation===n.code).length;let full=c>=5;return `<div class="card nationCard ${full?'full':''}"><h3>${flagIcon(n.code)} ${n.name}</h3><p>Players: ${c}/4</p>${full?'<div class="fullNote">🔒 FULL — choose another nation</div><br><button disabled>Full</button>':`<button onclick="selectNation('${n.code}')">Select</button>`}</div>`}).join('')}
 
 function svgFlag(code){
@@ -533,9 +562,22 @@ Object.assign(helperFacts,{
  'Cape Verde|Argentina':{favorite:'Argentina',chance:'Argentina 82% • Cape Verde 18%',why:'Argentina is a heavy favorite, but Cape Verde has already been one of the great stories of the tournament.',tip:'Safe pick: Argentina. Huge upset pick: Cape Verde.'}
 });
 
-function helperHtml(m){let key=(m.home||'')+'|'+(m.away||'');let h=m.helper||helperFacts[m.id]||helperFacts[key]||{favorite:m.coach,chance:'Favorite has the edge, but anything can happen.',why:'Use the Coach\'s Pick, confidence stars, and your own soccer instincts.',tip:'You can follow the favorite or try for an upset.'};let coach=h.favorite||m.coach;let knockout=!/Group Stage/i.test(m.stage||'');return `<div class="helper">${knockout?'<b>🏆 Knockout Match:</b> Pick the team that advances.<br>':''}<b>⭐ Coach\'s Pick:</b> ${coach} &nbsp; <b>Confidence:</b> ${'⭐'.repeat(m.conf)}<br><b>📊 Win Chances:</b> ${h.chance}<br><b>🧠 Why?</b> ${h.why}<br><b>🎯 Kid Tip:</b> ${h.tip}<br><small>${knockout?'Extra time and penalties count. Pick the team that advances.':'There must be a winner. Extra time and penalties count.'}</small></div>`}
+function helperHtml(m){
+ let key=(m.home||'')+'|'+(m.away||'');
+ let knockout=!/Group Stage/i.test(m.stage||'');
+ let h=m.helper||helperFacts[m.id]||helperFacts[key]||{};
+ let coach=h.favorite||m.coach||matchFavorite(m);
+ let chance=h.chance||`${coach||'Favorite'} 70% • ${((m.home===coach)?m.away:m.home)||'Underdog'} 30%`;
+ if(knockout){
+   chance=String(chance).replace(/\s*•\s*Draw\s*\d+%/gi,'').replace(/Draw\s*\d+%\s*•\s*/gi,'');
+ }
+ let why=h.why||(knockout?'Knockout matches must produce a winner, so choose the team you think will advance.':"Use the Coach's Pick, confidence stars, and your own soccer instincts.");
+ let tip=h.tip||(knockout?'Trust the favorite or predict the upset. Extra time and penalties count.':'You can follow the favorite, pick a draw, or try for an upset.');
+ if(knockout){tip=String(tip).replace(/Safe pick:\s*/i,'Strong pick: ').replace(/Brave pick:\s*Draw\.?/i,'Brave pick: upset.').replace(/Risk pick:\s*Draw\.?/i,'Risk pick: upset.');}
+ return `<div class="helper">${knockout?'<b>🏆 Knockout Match:</b> Pick the team that advances.<br>':''}<b>⭐ Coach's Pick:</b> ${coach} &nbsp; <b>Confidence:</b> ${'⭐'.repeat(m.conf)}<br><b>📊 Win Chances:</b> ${chance}<br><b>🧠 Why?</b> ${why}<br><b>🎯 Kid Tip:</b> ${tip}<br><small>${knockout?'Extra time and penalties count. No draws in knockout rounds.':'Draws are allowed in the group stage.'}</small></div>`
+}
 
-function renderSchedule(){let el=document.getElementById('scheduleList'); if(!el)return; el.innerHTML=getRound32Matches().map(m=>`<div class="card match"><h2>${flagIcon(teamCode(m.home))} ${m.home} vs ${flagIcon(teamCode(m.away))} ${m.away}</h2><p>${m.time} • ${m.stage}</p>${helperHtml(m)}</div>`).join('')}
+function renderSchedule(){let el=document.getElementById('scheduleList'); if(!el)return; el.innerHTML=getCurrentMatches().map(m=>`<div class="card match"><h2>${flagIcon(teamCode(m.home))} ${m.home} vs ${flagIcon(teamCode(m.away))} ${m.away}</h2><p>${m.time} • ${m.stage}</p>${helperHtml(m)}</div>`).join('')}
 function parseKickoffLocal(match){
   if(!match)return null;
   let dateText=String(match.dateRaw||'').trim();
@@ -564,7 +606,7 @@ function parseKickoffLocal(match){
 }
 function isMatchLocked(m){let k=parseKickoffLocal(m);return !!(m&&m.locked)||!!(k&&Date.now()>=k.getTime())}
 function lockText(m){let k=parseKickoffLocal(m);return k&&Date.now()>=k.getTime()?'🔒 Picks locked at kickoff':'🔒 Match locked'}
-function renderMatches(){let el=document.getElementById('matchList'); if(!el)return;let p=cur();document.getElementById('playerStatus').innerHTML=p?`Welcome, ${posIcon(p)} ${flagIcon(p.nation)} ${p.name} #${p.jersey} • ${posName(p)} • ${p.points} points <br><button onclick="logout()">Logout</button>`:'Login first to save picks.';el.innerHTML=getRound32Matches().map(m=>{let key=p?p.id+'_'+m.id:'';let sel=state.picks[key];let locked=isMatchLocked(m)||String(m.away).includes('TBD')||String(m.home).includes('TBD');let disabled=locked?'disabled':'';return `<div class="card match"><h2>${flagIcon(teamCode(m.home))} ${m.home} vs ${flagIcon(teamCode(m.away))} ${m.away}</h2><p>${m.time} • ${m.stage}</p>${helperHtml(m)}<div class="pick">${/Group Stage/i.test(m.stage)?`<button ${disabled} class="${sel===m.home?'selected':''}" onclick="pick('${m.id}','${m.home}')">${m.home}</button><button ${disabled} class="${sel==='Draw'?'selected':''}" onclick="pick('${m.id}','Draw')">Draw</button><button ${disabled} class="${sel===m.away?'selected':''}" onclick="pick('${m.id}','${m.away}')">${m.away}</button>`:`<button ${disabled} class="${sel===m.home?'selected':''}" onclick="pick('${m.id}','${m.home}')">${m.home}</button><button ${disabled} class="${sel===m.away?'selected':''}" onclick="pick('${m.id}','${m.away}')">${m.away}</button>`}</div>${locked?`<div class="lockedNote">${String(m.home).includes('TBD')||String(m.away).includes('TBD')?'⏳ Matchup not finalized yet':lockText(m)}${!sel&&!String(m.away).includes('TBD')&&!String(m.home).includes('TBD')?` • ⭐ Auto Pick: ${matchFavorite(m)}`:''}</div>`:''}</div>`}).join('')}
+function renderMatches(){let el=document.getElementById('matchList'); if(!el)return;let p=cur();document.getElementById('playerStatus').innerHTML=p?`Welcome, ${posIcon(p)} ${flagIcon(p.nation)} ${p.name} #${p.jersey} • ${posName(p)} • ${p.points} points <br><button onclick="logout()">Logout</button>`:'Login first to save picks.';el.innerHTML=getCurrentMatches().map(m=>{let key=p?p.id+'_'+m.id:'';let sel=state.picks[key];let locked=isMatchLocked(m)||String(m.away).includes('TBD')||String(m.home).includes('TBD');let disabled=locked?'disabled':'';return `<div class="card match"><h2>${flagIcon(teamCode(m.home))} ${m.home} vs ${flagIcon(teamCode(m.away))} ${m.away}</h2><p>${m.time} • ${m.stage}</p>${helperHtml(m)}<div class="pick">${/Group Stage/i.test(m.stage)?`<button ${disabled} class="${sel===m.home?'selected':''}" onclick="pick('${m.id}','${m.home}')">${m.home}</button><button ${disabled} class="${sel==='Draw'?'selected':''}" onclick="pick('${m.id}','Draw')">Draw</button><button ${disabled} class="${sel===m.away?'selected':''}" onclick="pick('${m.id}','${m.away}')">${m.away}</button>`:`<button ${disabled} class="${sel===m.home?'selected':''}" onclick="pick('${m.id}','${m.home}')">${m.home}</button><button ${disabled} class="${sel===m.away?'selected':''}" onclick="pick('${m.id}','${m.away}')">${m.away}</button>`}</div>${locked?`<div class="lockedNote">${String(m.home).includes('TBD')||String(m.away).includes('TBD')?'⏳ Matchup not finalized yet':lockText(m)}${!sel&&!String(m.away).includes('TBD')&&!String(m.home).includes('TBD')?` • ⭐ Auto Pick: ${matchFavorite(m)}`:''}</div>`:''}</div>`}).join('')}
 
 function dateKeyForMatch(m){
   let raw=String(m.dateRaw||'').trim();
@@ -656,13 +698,13 @@ function renderAdmin(){
  let pickCount=Object.keys(state.picks||{}).length;
  let pc=document.getElementById('adminPlayerCount'),nc=document.getElementById('adminNationCount'),pk=document.getElementById('adminPickCount');
  if(pc)pc.textContent=state.players.length;if(nc)nc.textContent=selectedNations;if(pk)pk.textContent=pickCount;
- if(matchesEl)matchesEl.innerHTML=getRound32Matches().map(m=>`<div class="card"><h3>${flagIcon(teamCode(m.home))} ${m.home} vs ${flagIcon(teamCode(m.away))} ${m.away}</h3><p>${m.time} • ${m.stage}</p><div class="grid3"><div><label>${m.home} Score</label><input id="homeScore_${m.id}" type="number" min="0" placeholder="0"></div><div><label>${m.away} Score</label><input id="awayScore_${m.id}" type="number" min="0" placeholder="0"></div><div><label>Winner</label><select id="winner_${m.id}"><option value="">Auto from score</option><option>${m.home}</option><option>Draw</option><option>${m.away}</option></select></div></div><button onclick="adminSaveResult('${m.id}')">Save Result</button> <button onclick="adminScoreMatch('${m.id}')">Score This Match</button><p><small>Saved result will be used when you calculate scores.</small></p></div>`).join('');
+ if(matchesEl)matchesEl.innerHTML=getCurrentMatches().map(m=>`<div class="card"><h3>${flagIcon(teamCode(m.home))} ${m.home} vs ${flagIcon(teamCode(m.away))} ${m.away}</h3><p>${m.time} • ${m.stage}</p><div class="grid3"><div><label>${m.home} Score</label><input id="homeScore_${m.id}" type="number" min="0" placeholder="0"></div><div><label>${m.away} Score</label><input id="awayScore_${m.id}" type="number" min="0" placeholder="0"></div><div><label>Winner</label><select id="winner_${m.id}"><option value="">Auto from score</option><option>${m.home}</option><option>${m.away}</option></select></div></div><button onclick="adminSaveResult('${m.id}')">Save Result</button> <button onclick="adminScoreMatch('${m.id}')">Score This Match</button><p><small>Saved result will be used when you calculate scores.</small></p></div>`).join('');
  if(playersEl)playersEl.innerHTML=`<table class="table"><tr><th>Player</th><th>Username</th><th>Password</th><th>Nation</th><th>Position</th><th>Actions</th></tr>${state.players.map(p=>`<tr><td>${p.name} #${p.jersey}</td><td>${p.id}</td><td>BCSC2026</td><td>${p.nation?flagIcon(p.nation)+' ':''}${nationName(p.nation)||'—'}</td><td>${posIcon(p)} ${posName(p)}</td><td><button onclick="resetPlayerAdmin('${p.id}')">Reset</button></td></tr>`).join('')}</table>`
 }
-function adminLogin(){let code=(document.getElementById('adminCode')?.value||'').trim();if(code==='coach2026'){localStorage.bcscAdmin='true';renderAll()}else{let m=document.getElementById('adminMsg');if(m)m.textContent='Wrong admin code.'}}
+function adminLogin(){let code=(document.getElementById('adminCode')?.value||'').trim();if(code==='bcsc2026'){localStorage.bcscAdmin='true';renderAll()}else{let m=document.getElementById('adminMsg');if(m)m.textContent='Wrong admin code.'}}
 function adminLogout(){localStorage.removeItem('bcscAdmin');let c=document.getElementById('adminCode');if(c)c.value='';show('home');renderAll()}
 function resetPlayerAdmin(username){let p=state.players.find(x=>x.id===username);if(!p)return; if(!confirm('Reset '+p.name+' #'+p.jersey+'? This clears local nation, position, points, badges, and picks for this browser preview.'))return;p.nation=null;p.position=null;p.points=0;p.badges=[];p.championPick=null;Object.keys(state.picks||{}).forEach(k=>{if(k.startsWith(username+'_'))delete state.picks[k]});save();postAction({action:'resetPlayer',username});renderAll();alert(p.name+' #'+p.jersey+' has been reset.')}
-async function adminSaveResult(matchId){let m=getMatches().find(x=>String(x.id)===String(matchId));if(!m)return;let hs=document.getElementById('homeScore_'+matchId)?.value;let as=document.getElementById('awayScore_'+matchId)?.value;let winner=document.getElementById('winner_'+matchId)?.value;if(winner==='')winner=Number(hs)>Number(as)?m.home:(Number(as)>Number(hs)?m.away:'Draw');m.result=`${hs}-${as}`;m.winner=winner;m.locked=true;save();let res=await postAction({action:'saveMatchResult',matchId,result:m.result,winner});renderAll();alert((res&&res.message?res.message:'Result saved')+' for '+m.home+' vs '+m.away+'.')}
+async function adminSaveResult(matchId){let m=getMatches().find(x=>String(x.id)===String(matchId));if(!m)return;let hs=document.getElementById('homeScore_'+matchId)?.value;let as=document.getElementById('awayScore_'+matchId)?.value;let winner=document.getElementById('winner_'+matchId)?.value;if(winner==='')winner=Number(hs)>Number(as)?m.home:(Number(as)>Number(hs)?m.away:'');m.result=`${hs}-${as}`;m.winner=winner;m.locked=true;save();let res=await postAction({action:'saveMatchResult',matchId,result:m.result,winner});renderAll();alert((res&&res.message?res.message:'Result saved')+' for '+m.home+' vs '+m.away+'.')}
 async function adminScoreMatch(matchId){await postAction({action:'autoPickMissing'});let res=await postAction({action:'calculateScores'});alert((res&&res.message)?res.message:'Scoring requested. Refresh after a moment to see updated standings.');await loadSheetData();}
 async function adminScoreAll(){if(!confirm('Calculate scores for all matches that have saved results?'))return;await postAction({action:'autoPickMissing'});let res=await postAction({action:'calculateScores'});alert((res&&res.message)?res.message:'Scoring requested for completed matches.');await loadSheetData();}
 function flag(code){return nations.find(n=>n.code===code)?.flag||'🌎'}function nationName(code){return nations.find(n=>n.code===code)?.name||''}
@@ -715,7 +757,26 @@ function renderHistory(){
   if(finals)finals.innerHTML=`<table class="table historyTable"><thead><tr><th>Year</th><th>Champion</th><th>Score</th><th>Runner-Up</th></tr></thead><tbody>${worldCupFinals.map(f=>`<tr><td><span class="yearBadge">${f[0]}</span></td><td>${flagIcon(f[1])} ${f[2]}</td><td>${f[3]}</td><td>${flagIcon(f[4])} ${f[5]}</td></tr>`).join('')}</tbody></table>`;
 }
 
-function resetDemo(){localStorage.removeItem('bcscState');localStorage.removeItem('bcscStateV14');localStorage.removeItem('bcscStateV17');localStorage.removeItem('bcscIsaiahResetV11');localStorage.removeItem('bcscIsaiahResetV13');localStorage.removeItem('bcscIsaiahResetV17');location.reload()}function renderAll(){let lb=document.getElementById('logoutNavBtn');if(lb)lb.style.display=state.current?'inline-block':'none';renderNations();renderMatches();renderSchedule();renderLeaderboard();renderNationStandings();renderHomeNationsPreview();renderBadgeSpotlight();renderWall();renderProfile();renderWelcome();renderAdmin();renderDidYouKnow();renderHistory();renderStatsLeaders();renderHomeRound32Preview()}renderAll();loadSheetData();
+function resetDemo(){localStorage.removeItem('bcscState');localStorage.removeItem('bcscStateV14');localStorage.removeItem('bcscStateV17');localStorage.removeItem('bcscIsaiahResetV11');localStorage.removeItem('bcscIsaiahResetV13');localStorage.removeItem('bcscIsaiahResetV17');location.reload()}
+function renderRoadToFinal(){
+ let el=document.getElementById('roadToFinal');if(!el)return;
+ let all=getMatches();let r16=all.filter(isRound16);if(!r16.length)r16=round16Fallback;
+ let qf=all.filter(m=>String(m.stage||'').toLowerCase().includes('quarter'));
+ let sf=all.filter(m=>String(m.stage||'').toLowerCase().includes('semi'));
+ let fn=all.filter(m=>String(m.stage||'').toLowerCase()==='final'||String(m.stage||'').toLowerCase().includes('final'));
+ function roundHtml(title,ms){return `<div class="bracketRound"><h4>${title}</h4>${(ms.length?ms:[{home:'TBD',away:'TBD'}]).map(m=>{let w=String(m.winner||'');return `<div class="bracketMatch"><span class="bracketTeam ${w===m.home?'bracketWinner':''}">${flagIcon(teamCode(m.home))} ${m.home||'TBD'}</span><b>vs</b><span class="bracketTeam ${w===m.away?'bracketWinner':''}">${flagIcon(teamCode(m.away))} ${m.away||'TBD'}</span></div>`}).join('')}</div>`}
+ el.innerHTML=`<div class="roadFinalGrid">${roundHtml('Round of 16',r16)}${roundHtml('Quarterfinals',qf)}${roundHtml('Semifinals',sf)}${roundHtml('Final',fn)}</div>`;
+}
+function renderChampionshipOdds(){
+ let el=document.getElementById('championshipOdds');if(!el)return;let remaining=new Set();
+ getCurrentMatches().forEach(m=>{if(m.home&&!String(m.home).includes('TBD'))remaining.add(m.home);if(m.away&&!String(m.away).includes('TBD'))remaining.add(m.away)});
+ if(!remaining.size){getMatches().filter(m=>m.winner).slice(-8).forEach(m=>remaining.add(m.winner));}
+ let strength={'Argentina':96,'Brazil':94,'France':93,'Spain':91,'Portugal':89,'England':88,'Colombia':84,'Belgium':82,'Morocco':80,'Canada':73,'Norway':78,'Paraguay':72,'United States':76,'Switzerland':77,'Mexico':75,'Australia':70};
+ let arr=[...remaining].map(t=>[t,strength[t]||68]);let total=arr.reduce((s,x)=>s+x[1],0)||1;arr=arr.map(x=>[x[0],Math.round(x[1]/total*100)]).sort((a,b)=>b[1]-a[1]).slice(0,10);
+ el.innerHTML=arr.map((x,i)=>`<div class="oddsRow"><b>${i+1}</b><span>${flagIcon(teamCode(x[0]))} ${x[0]}<div class="oddsBar"><span style="width:${x[1]}%"></span></div></span><b>${x[1]}%</b></div>`).join('')||'<p>Odds will appear once Round of 16 teams are loaded.</p>';
+}
+
+function renderAll(){let lb=document.getElementById('logoutNavBtn');if(lb)lb.style.display=state.current?'inline-block':'none';renderNations();renderMatches();renderSchedule();renderLeaderboard();renderNationStandings();renderHomeNationsPreview();renderBadgeSpotlight();renderWall();renderProfile();renderWelcome();renderAdmin();renderDidYouKnow();renderHistory();renderStatsLeaders();renderHomeRound32Preview();renderRoadToFinal();renderChampionshipOdds()}renderAll();loadSheetData();
 
 </script>
 </body>
