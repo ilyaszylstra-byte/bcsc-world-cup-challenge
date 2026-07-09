@@ -321,7 +321,7 @@ const round16Fallback=[
 ];
 const quarterfinalFallback=[
  {id:'78',stage:'Quarterfinal',home:'France',away:'Morocco',time:'July 9 • 4:00 PM',dateRaw:'2026-07-09',kickoffRaw:'4:00 PM',coach:'France',conf:4},
- {id:'79',stage:'Quarterfinal',home:'Portugal',away:'Spain',time:'July 10 • 3:00 PM',dateRaw:'2026-07-10',kickoffRaw:'3:00 PM',coach:'Spain',conf:3},
+ {id:'79',stage:'Quarterfinal',home:'Spain',away:'Belgium',time:'July 10 • 3:00 PM',dateRaw:'2026-07-10',kickoffRaw:'3:00 PM',coach:'Spain',conf:3},
  {id:'80',stage:'Quarterfinal',home:'Norway',away:'England',time:'July 11 • 5:00 PM',dateRaw:'2026-07-11',kickoffRaw:'5:00 PM',coach:'England',conf:3},
  {id:'81',stage:'Quarterfinal',home:'Argentina',away:'Switzerland',time:'July 11 • 9:00 PM',dateRaw:'2026-07-11',kickoffRaw:'9:00 PM',coach:'Argentina',conf:4}
 ];
@@ -587,8 +587,8 @@ Object.assign(helperFacts,{
  'Mexico|England':{favorite:'England',chance:'England 64% • Mexico 36%',why:'England has attacking depth and knockout experience, but Mexico has momentum and a strong home-tournament energy.',tip:'Strong pick: England. Brave pick: Mexico.'},
  'England|Mexico':{favorite:'England',chance:'England 64% • Mexico 36%',why:'England has attacking depth and knockout experience, but Mexico has momentum and a strong home-tournament energy.',tip:'Strong pick: England. Brave pick: Mexico.'},
  '74':{favorite:'Spain',chance:'Spain 57% • Portugal 43%',why:'Spain can control possession and tempo, while Portugal has match-winners who can decide the game quickly.',tip:'Strong pick: Spain. Brave pick: Portugal.'},
- 'Portugal|Spain':{favorite:'Spain',chance:'Spain 57% • Portugal 43%',why:'Spain can control possession and tempo, while Portugal has match-winners who can decide the game quickly.',tip:'Strong pick: Spain. Brave pick: Portugal.'},
- 'Spain|Portugal':{favorite:'Spain',chance:'Spain 57% • Portugal 43%',why:'Spain can control possession and tempo, while Portugal has match-winners who can decide the game quickly.',tip:'Strong pick: Spain. Brave pick: Portugal.'},
+ 'Spain|Belgium':{favorite:'Spain',chance:'Spain 56% • Belgium 44%',why:'Spain can control possession and tempo, while Belgium has creativity, experience, and enough attacking quality to make this very close.',tip:'Strong pick: Spain. Brave pick: Belgium.'},
+ 'Belgium|Spain':{favorite:'Spain',chance:'Spain 56% • Belgium 44%',why:'Spain can control possession and tempo, while Belgium has creativity, experience, and enough attacking quality to make this very close.',tip:'Strong pick: Spain. Brave pick: Belgium.'},
  '75':{favorite:'Belgium',chance:'Belgium 54% • United States 46%',why:'Belgium has creativity and experience, but the United States has speed, energy, and confidence after a strong win.',tip:'Strong pick: Belgium. Brave pick: United States.'},
  'Belgium|United States':{favorite:'Belgium',chance:'Belgium 54% • United States 46%',why:'Belgium has creativity and experience, but the United States has speed, energy, and confidence after a strong win.',tip:'Strong pick: Belgium. Brave pick: United States.'},
  'United States|Belgium':{favorite:'Belgium',chance:'Belgium 54% • United States 46%',why:'Belgium has creativity and experience, but the United States has speed, energy, and confidence after a strong win.',tip:'Strong pick: Belgium. Brave pick: United States.'},
@@ -606,9 +606,9 @@ Object.assign(helperFacts,{
  '78':{favorite:'France',chance:'France 64% • Morocco 36%',why:'France has elite attackers and big-game experience, but Morocco has already knocked out strong teams and defends with belief.',tip:'Strong pick: France. Brave pick: Morocco.'},
  'France|Morocco':{favorite:'France',chance:'France 64% • Morocco 36%',why:'France has elite attackers and big-game experience, but Morocco has already knocked out strong teams and defends with belief.',tip:'Strong pick: France. Brave pick: Morocco.'},
  'Morocco|France':{favorite:'France',chance:'France 64% • Morocco 36%',why:'France has elite attackers and big-game experience, but Morocco has already knocked out strong teams and defends with belief.',tip:'Strong pick: France. Brave pick: Morocco.'},
- '79':{favorite:'Spain',chance:'Spain 55% • Portugal 45%',why:'Spain has controlled games with passing and clean defending, while Portugal has enough attacking quality to win a tight knockout match.',tip:'Strong pick: Spain. Brave pick: Portugal.'},
- 'Portugal|Spain':{favorite:'Spain',chance:'Spain 55% • Portugal 45%',why:'Spain has controlled games with passing and clean defending, while Portugal has enough attacking quality to win a tight knockout match.',tip:'Strong pick: Spain. Brave pick: Portugal.'},
- 'Spain|Portugal':{favorite:'Spain',chance:'Spain 55% • Portugal 45%',why:'Spain has controlled games with passing and clean defending, while Portugal has enough attacking quality to win a tight knockout match.',tip:'Strong pick: Spain. Brave pick: Portugal.'},
+ '79':{favorite:'Spain',chance:'Spain 56% • Belgium 44%',why:'Spain can control possession and tempo, while Belgium has creativity, experience, and enough attacking quality to make this very close.',tip:'Strong pick: Spain. Brave pick: Belgium.'},
+ 'Spain|Belgium':{favorite:'Spain',chance:'Spain 56% • Belgium 44%',why:'Spain has controlled games with passing and clean defending, while Belgium brings creativity, experience, and dangerous attackers.',tip:'Strong pick: Spain. Brave pick: Belgium.'},
+ 'Belgium|Spain':{favorite:'Spain',chance:'Spain 56% • Belgium 44%',why:'Spain has controlled games with passing and clean defending, while Belgium brings creativity, experience, and dangerous attackers.',tip:'Strong pick: Spain. Brave pick: Belgium.'},
  '80':{favorite:'England',chance:'England 52% • Norway 48%',why:'England has depth and knockout experience, but Norway has one of the hottest scorers in the tournament and real upset power.',tip:'Tiny edge: England. Brave pick: Norway.'},
  'Norway|England':{favorite:'England',chance:'England 52% • Norway 48%',why:'England has depth and knockout experience, but Norway has one of the hottest scorers in the tournament and real upset power.',tip:'Tiny edge: England. Brave pick: Norway.'},
  'England|Norway':{favorite:'England',chance:'England 52% • Norway 48%',why:'England has depth and knockout experience, but Norway has one of the hottest scorers in the tournament and real upset power.',tip:'Tiny edge: England. Brave pick: Norway.'},
@@ -831,7 +831,7 @@ function renderChampionshipOdds(){
  let el=document.getElementById('championshipOdds');if(!el)return;
  // V55.5 fun odds after the Round of 16. Eliminated teams removed; only quarterfinalists remain.
  let arr=[
-   ['France',25],['Argentina',23],['Spain',16],['England',13],['Norway',9],['Portugal',7],['Morocco',5],['Switzerland',2]
+   ['France',25],['Argentina',23],['Spain',17],['England',13],['Norway',9],['Belgium',7],['Morocco',4],['Switzerland',2]
  ];
  el.innerHTML=arr.map((x,i)=>`<div class="oddsRow"><b>${i+1}</b><span>${flagIcon(teamCode(x[0]))} ${x[0]}<div class="oddsBar"><span style="width:${x[1]}%"></span></div></span><b>${x[1]}%</b></div>`).join('')||'<p>Odds will appear once teams are loaded.</p>';
 }
